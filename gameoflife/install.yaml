@@ -1,0 +1,24 @@
+---
+- name: install openjdk on ubuntu
+  become: yes
+  hosts: all
+  tasks:
+    - name: install openjdk
+      ansible.builtin.apt:
+        name: openjdk-8-jdk
+        update_cache: yes
+        state: present
+    - name: install tomcat9
+      ansible.builtin.apt:
+        name: tomcat9
+        state: present
+    - name: get game of life
+      ansible.builtin.get_url:
+        url: https://referenceapplicationskhaja.s3.us-west-2.amazonaws.com/gameoflife.war
+        dest: /var/lib/tomcat9/webapps/gameoflife.war
+    - name: tomcat service restart
+      ansible.builtin.systemd:
+        state: restarted
+        name: tomcat9
+        enabled: yes
+
