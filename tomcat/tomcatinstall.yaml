@@ -1,0 +1,47 @@
+---
+
+- name: installing tomcat9 and apt update
+  become: yes
+  hosts: all
+  tasks:
+    - name: apt update and installing openjdk11
+      ansible.builtin.apt:
+        name: openjdk-11-jdk
+        update_cache: yes
+        state: present
+    - name: adduser tomcat
+      ansible.builtin.user:
+        name: tomcat
+        shell: /bin/false
+        home: /opt/tomcat
+        group: tomcat
+    - name: download tomcat from url
+      ansible.builtin.get_url:
+        url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.65/bin/apache-tomcat-9.0.65.tar.gz
+        dest: /tmp
+    - name: untar the tomcat9 file and move
+      ansible.builtin.unarchive:
+        src: /tmp/apache-tomcat-9.0.65.tar.gz
+        dest: /opt/tomcat
+    - name: symbolic link of tomcat latest
+      ansible.builtin.file:
+        src: /opt/tomcat/apache-tomcat-9.0.65
+        dest: /opt/tomcat/latest
+        state: link
+    - name: change ownership and group tomcat
+      ansible.builtin.file:
+        path: /opt/tomcat
+        group: tomcat
+    - name: copy tomcat.service file
+      ansible.builtin.copy:
+        src: tomcat.service
+        dest: /etc/systemd/system/tomcat.service
+    - name: daemon reload
+      ansible.builtin.systemd:
+        daemon_reload: yes
+        enabled: yes
+        state: started
+
+
+
+  
