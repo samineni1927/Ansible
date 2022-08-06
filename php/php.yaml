@@ -16,6 +16,12 @@
           - libapache2-mod-php
           - php-mysql
         state: present
-    - name: create a file
-      ansible.builtin.file:
-        path: /var/www/html/info.php
+    - name: copy the file info.php
+      ansible.builtin.copy:
+        src: info.php
+        dest: /var/www/html/info.php
+    - name: apache2 service start and enable
+      ansible.builtin.systemd:
+        name: apache2
+        enabled: yes
+        state: started
