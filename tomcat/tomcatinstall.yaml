@@ -32,7 +32,7 @@
       ansible.builtin.file:
         path: /opt/tomcat
         group: tomcat
-    -name: create bin directory
+    - name: create bin directory
       ansible.builtin.shell:
         cmd: sudo sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'
     - name: copy tomcat.service file
